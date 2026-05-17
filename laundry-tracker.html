@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Laundry</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Laundry">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#6b8e7f">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20fill%3D%22%236b8e7f%22%2F%3E%3Cpath%20d%3D%22M52%2068h76l-6%2068a14%2014%200%200%201-14%2012H72a14%2014%200%200%201-14-12z%22%20fill%3D%22%23fdfaf6%22%2F%3E%3Cpath%20d%3D%22M64%2068v-8a26%2026%200%200%201%2052%200v8%22%20stroke%3D%22%23fdfaf6%22%20stroke-width%3D%228%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2278%22%20cy%3D%22100%22%20r%3D%226%22%20fill%3D%22%236b8e7f%22%2F%3E%3Ccircle%20cx%3D%22102%22%20cy%3D%22118%22%20r%3D%226%22%20fill%3D%22%236b8e7f%22%2F%3E%3C%2Fsvg%3E">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fdfaf6;
+    --card: #ffffff;
+    --ink: #2a2a2a;
+    --muted: #6f6a64;
+    --line: #ece6dd;
+    --accent: #6b8e7f;
+    --accent-soft: #d8e3dd;
+    --warn: #c97b5b;
+    --warn-soft: #f7e1d4;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: calc(24px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+  }
+  header.page {
+    margin-bottom: 22px;
+  }
+  header.page h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+  }
+  header.page .sub {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  section.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  section.card h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+  }
+  section.card .desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- Add load form ---------- */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .form-row label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  select, input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  select:focus, input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .people-pick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .people-pick button {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .people-pick button.on {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .btn-primary:hover { filter: brightness(0.95); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-ghost:hover { background: #f6f1ea; }
+
+  /* ---------- Loads list ---------- */
+  .loads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .load {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #fcfbf8;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+  }
+  .swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .load-info .top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .load-info .type {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .load-info .meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag.muted { background: #f0ebe3; color: var(--muted); }
+  .stage-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .stage-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f0ebe3;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .stage-pill.washing { background: #e1ecf4; color: #355a72; }
+  .stage-pill.drying { background: #fbeec5; color: #856321; }
+  .stage-pill.fold { background: #f7e1d4; color: #8a4a2c; }
+  .stage-pill.done { background: var(--accent-soft); color: #2f5141; }
+  .stage-buttons {
+    display: flex;
+    gap: 4px;
+  }
+  .stage-buttons button {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+  }
+  .stage-buttons button:hover { background: #f6f1ea; color: var(--ink); }
+  .stage-buttons button.del { color: #b85a47; }
+
+  /* ---------- Baskets ---------- */
+  .baskets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .basket {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    background: #fcfbf8;
+    display: flex;
+    flex-direction: column;
+    min-height: 160px;
+  }
+  .basket.has-items { background: #fffdf7; border-color: #ebd9b8; }
+  .basket.stale { background: var(--warn-soft); border-color: var(--warn); }
+  .basket .name {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 2px;
+  }
+  .basket .count {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .basket.stale .count {
+    color: var(--warn);
+    font-weight: 500;
+  }
+  .bundle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .bundle .mini-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .bundle .bundle-info {
+    flex: 1;
+    line-height: 1.2;
+  }
+  .bundle .bundle-info .age {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .bundle button {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-family: inherit;
+  }
+  .basket .empty {
+    color: var(--muted);
+    font-size: 12px;
+    font-style: italic;
+    margin-top: auto;
+    padding: 8px;
+    text-align: center;
+  }
+
+  /* ---------- Guide ---------- */
+  details.guide {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    box-shadow: var(--shadow);
+  }
+  details.guide summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    list-style: none;
+  }
+  details.guide summary::-webkit-details-marker { display: none; }
+  details.guide summary::before {
+    content: "▸ ";
+    color: var(--accent);
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  details.guide[open] summary::before { content: "▾ "; }
+  details.guide .guide-body {
+    margin-top: 12px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+  details.guide .guide-body p { margin: 6px 0; }
+  details.guide table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  details.guide td, details.guide th {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  details.guide th { color: var(--muted); font-weight: 500; }
+
+  /* ---------- Banner ---------- */
+  .banner {
+    background: var(--warn-soft);
+    border: 1px solid var(--warn);
+    color: #6d3a23;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .banner.show { display: block; }
+
+  .empty-loads {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+  }
+
+  @media (max-width: 540px) {
+    .form-row { grid-template-columns: 1fr; }
+    .load { grid-template-columns: auto 1fr; }
+    .stage-controls { grid-column: 1 / -1; align-items: flex-start; flex-direction: row; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Family Laundry Tracker</h1>
+    <div class="sub">A home for every load — and a basket for every person.</div>
+  </header>
+
+  <div id="chair-banner" class="banner"></div>
+
+  <!-- Add a load -->
+  <section class="card">
+    <h2>Add a load</h2>
+    <div class="desc">What's going in the wash? Pick the type and tag whose clothes are in it.</div>
+    <div class="form-row">
+      <div>
+        <label for="load-type">Load type</label>
+        <select id="load-type">
+          <option value="whites">Whites</option>
+          <option value="lights">Lights</option>
+          <option value="darks">Darks</option>
+          <option value="colours">Colours / Mixed</option>
+          <option value="reds">Reds (wash separately)</option>
+          <option value="delicates">Delicates</option>
+          <option value="towels">Towels</option>
+          <option value="bedding">Bedding / Sheets</option>
+          <option value="sports">Sportswear</option>
+        </select>
+      </div>
+      <div>
+        <label for="load-day">Day</label>
+        <input type="date" id="load-day">
+      </div>
+    </div>
+    <label>Whose clothes are in this load?</label>
+    <div class="people-pick" id="people-pick">
+      <button type="button" data-person="Joel">Joel</button>
+      <button type="button" data-person="Neriah">Neriah</button>
+      <button type="button" data-person="Eden">Eden</button>
+      <button type="button" data-person="Paulette">Paulette</button>
+    </div>
+    <div style="margin-top: 14px;">
+      <button class="btn-primary" id="add-load">Add load</button>
+    </div>
+  </section>
+
+  <!-- Active loads -->
+  <section class="card">
+    <h2>This week's wash</h2>
+    <div class="desc">Move each load through the stages. When it's folded, send it to the family baskets.</div>
+    <div class="loads-list" id="loads-list"></div>
+  </section>
+
+  <!-- Family baskets -->
+  <section class="card">
+    <h2>Family baskets</h2>
+    <div class="desc">Each person has their own basket. Drop clean clothes in. Tick the bundle off once it's put away. <strong>No chairs.</strong></div>
+    <div class="baskets-grid" id="baskets-grid"></div>
+  </section>
+
+  <!-- Guide -->
+  <details class="guide">
+    <summary>Quick laundry guide (for the rest of us)</summary>
+    <div class="guide-body">
+      <p>A starter cheat sheet — Mum probably knows this already, but it's here for everyone else.</p>
+      <table>
+        <tr><th>Load</th><th>Temp</th><th>Notes</th></tr>
+        <tr><td><strong>Whites</strong></td><td>40°C / warm</td><td>White socks, undies, t-shirts. Add a stain-remover for the stubborn stuff.</td></tr>
+        <tr><td><strong>Lights</strong></td><td>30°C</td><td>Pale colours — beige, pastels, light grey.</td></tr>
+        <tr><td><strong>Darks</strong></td><td>30°C / cold</td><td>Black, navy, dark grey. Inside out keeps the colour.</td></tr>
+        <tr><td><strong>Colours</strong></td><td>30°C</td><td>Anything bright and mixed.</td></tr>
+        <tr><td><strong>Reds</strong></td><td>30°C</td><td>First few washes — keep separate, they bleed.</td></tr>
+        <tr><td><strong>Delicates</strong></td><td>Cold, gentle</td><td>Bras, silk, anything with "hand wash" on the tag. Use a mesh bag.</td></tr>
+        <tr><td><strong>Towels</strong></td><td>60°C</td><td>Hot enough to kill bacteria. No fabric softener — it stops them absorbing.</td></tr>
+        <tr><td><strong>Bedding</strong></td><td>60°C</td><td>Strip beds the same morning so it all goes in together.</td></tr>
+        <tr><td><strong>Sportswear</strong></td><td>30°C</td><td>Cold protects the elastic. Skip softener.</td></tr>
+      </table>
+      <p style="margin-top: 14px;"><strong>Golden rules:</strong> separate by colour, zip up zips, empty pockets, don't overfill the drum (you should be able to fit a hand on top).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'family-laundry-v1';
+  const PEOPLE = ['Joel', 'Neriah', 'Eden', 'Paulette'];
+
+  const TYPE_META = {
+    whites:    { label: 'Whites',     color: '#f6f4ee', border: '#dcd6c4' },
+    lights:    { label: 'Lights',     color: '#ece2cf', border: '#c9b894' },
+    darks:     { label: 'Darks',      color: '#3a3a44', border: '#1f1f25' },
+    colours:   { label: 'Colours',    color: 'linear-gradient(135deg,#e7a4a4,#e6c98a,#a3c4a8,#8aacd0)', border: '#bba98a' },
+    reds:      { label: 'Reds',       color: '#c75252', border: '#8e3535' },
+    delicates: { label: 'Delicates',  color: '#efd6e3', border: '#d1a8bc' },
+    towels:    { label: 'Towels',     color: '#7fb0a8', border: '#4f8a82' },
+    bedding:   { label: 'Bedding',    color: '#b8c8a8', border: '#85a072' },
+    sports:    { label: 'Sportswear', color: '#dfe78a', border: '#a7af52' }
+  };
+
+  const STAGES = ['dirty', 'washing', 'drying', 'fold', 'done'];
+  const STAGE_META = {
+    dirty:   { label: 'To wash',       next: 'Start wash →',   nextStage: 'washing' },
+    washing: { label: 'Washing',       next: 'In dryer →',     nextStage: 'drying'  },
+    drying:  { label: 'Drying',        next: 'Ready to fold →',nextStage: 'fold'    },
+    fold:    { label: 'Ready to fold', next: 'Into baskets →', nextStage: 'done'    },
+    done:    { label: 'In baskets',    next: null,             nextStage: null      }
+  };
+
+  // ---------- state ----------
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      const s = JSON.parse(raw);
+      if (!s.loads) s.loads = [];
+      if (!s.baskets) s.baskets = {};
+      PEOPLE.forEach(p => { if (!s.baskets[p]) s.baskets[p] = []; });
+      return s;
+    } catch (e) {
+      return defaultState();
+    }
+  }
+  function defaultState() {
+    const s = { loads: [], baskets: {} };
+    PEOPLE.forEach(p => s.baskets[p] = []);
+    return s;
+  }
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  let state = loadState();
+
+  // ---------- helpers ----------
+  function todayISO() {
+    const d = new Date();
+    return d.toISOString().slice(0, 10);
+  }
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+  function daysSince(ts) {
+    return Math.floor((Date.now() - ts) / 86400000);
+  }
+
+  // ---------- render: add-load form ----------
+  const selectedPeople = new Set();
+  const peoplePickEl = document.getElementById('people-pick');
+  peoplePickEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-person]');
+    if (!btn) return;
+    const p = btn.dataset.person;
+    if (selectedPeople.has(p)) { selectedPeople.delete(p); btn.classList.remove('on'); }
+    else { selectedPeople.add(p); btn.classList.add('on'); }
+  });
+
+  document.getElementById('load-day').value = todayISO();
+
+  document.getElementById('add-load').addEventListener('click', () => {
+    const type = document.getElementById('load-type').value;
+    const day = document.getElementById('load-day').value || todayISO();
+    const people = Array.from(selectedPeople);
+    if (people.length === 0) {
+      alert("Tag at least one person so we know whose basket it goes in.");
+      return;
+    }
+    state.loads.push({
+      id: uid(),
+      type,
+      day,
+      people,
+      stage: 'dirty',
+      createdAt: Date.now()
+    });
+    saveState();
+    selectedPeople.clear();
+    peoplePickEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+    document.getElementById('load-day').value = todayISO();
+    render();
+  });
+
+  // ---------- render: loads ----------
+  function renderLoads() {
+    const list = document.getElementById('loads-list');
+    list.innerHTML = '';
+    const active = state.loads.filter(l => l.stage !== 'done');
+    if (active.length === 0) {
+      list.innerHTML = '<div class="empty-loads">No loads on the go. Add one above when a wash is starting.</div>';
+      return;
+    }
+    // sort: by stage progression then day
+    active.sort((a, b) => STAGES.indexOf(a.stage) - STAGES.indexOf(b.stage) || a.day.localeCompare(b.day));
+    active.forEach(load => {
+      const meta = TYPE_META[load.type];
+      const stageMeta = STAGE_META[load.stage];
+      const row = document.createElement('div');
+      row.className = 'load';
+      const swatchStyle = meta.color.startsWith('linear-gradient')
+        ? `background: ${meta.color}; border-color: ${meta.border};`
+        : `background: ${meta.color}; border-color: ${meta.border};`;
+      row.innerHTML = `
+        <div class="swatch" style="${swatchStyle}"></div>
+        <div class="load-info">
+          <div class="top">
+            <span class="type">${meta.label}</span>
+            ${load.people.map(p => `<span class="tag">${p}</span>`).join('')}
+          </div>
+          <div class="meta">${formatDate(load.day)}</div>
+        </div>
+        <div class="stage-controls">
+          <span class="stage-pill ${load.stage}">${stageMeta.label}</span>
+          <div class="stage-buttons">
+            ${stageMeta.nextStage ? `<button data-act="advance" data-id="${load.id}">${stageMeta.next}</button>` : ''}
+            <button class="del" data-act="delete" data-id="${load.id}" title="Remove">✕</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  document.getElementById('loads-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const load = state.loads.find(l => l.id === id);
+    if (!load) return;
+    if (btn.dataset.act === 'delete') {
+      if (confirm('Remove this load?')) {
+        state.loads = state.loads.filter(l => l.id !== id);
+        saveState();
+        render();
+      }
+    } else if (btn.dataset.act === 'advance') {
+      const next = STAGE_META[load.stage].nextStage;
+      if (next === 'done') {
+        // distribute bundles to baskets
+        load.people.forEach(p => {
+          state.baskets[p].push({
+            id: uid(),
+            type: load.type,
+            addedAt: Date.now(),
+            fromLoadId: load.id
+          });
+        });
+      }
+      load.stage = next;
+      saveState();
+      render();
+    }
+  });
+
+  // ---------- render: baskets ----------
+  function renderBaskets() {
+    const grid = document.getElementById('baskets-grid');
+    grid.innerHTML = '';
+    let staleCount = 0;
+    PEOPLE.forEach(person => {
+      const bundles = state.baskets[person] || [];
+      const oldest = bundles.length ? Math.max(...bundles.map(b => daysSince(b.addedAt))) : 0;
+      const isStale = oldest >= 2;
+      if (isStale) staleCount++;
+      const el = document.createElement('div');
+      el.className = 'basket' + (bundles.length ? ' has-items' : '') + (isStale ? ' stale' : '');
+      el.innerHTML = `
+        <div class="name">${person}</div>
+        <div class="count">${bundles.length === 0 ? 'Empty' : bundles.length + ' bundle' + (bundles.length === 1 ? '' : 's') + ' waiting' + (isStale ? ' · sitting ' + oldest + ' day' + (oldest === 1 ? '' : 's') : '')}</div>
+        ${bundles.length === 0
+          ? '<div class="empty">All put away ✓</div>'
+          : bundles.map(b => {
+              const m = TYPE_META[b.type];
+              const swatchStyle = m.color.startsWith('linear-gradient')
+                ? `background: ${m.color};`
+                : `background: ${m.color};`;
+              const age = daysSince(b.addedAt);
+              const ageLabel = age === 0 ? 'today' : age + ' day' + (age === 1 ? '' : 's') + ' ago';
+              return `
+                <div class="bundle">
+                  <div class="mini-swatch" style="${swatchStyle}"></div>
+                  <div class="bundle-info">
+                    <div>${m.label}</div>
+                    <div class="age">${ageLabel}</div>
+                  </div>
+                  <button data-basket="${person}" data-bundle="${b.id}" title="Put away">✓</button>
+                </div>
+              `;
+            }).join('')
+        }
+      `;
+      grid.appendChild(el);
+    });
+    // chair banner
+    const banner = document.getElementById('chair-banner');
+    if (staleCount > 0) {
+      banner.textContent = '⚠ ' + staleCount + ' basket' + (staleCount === 1 ? ' has' : 's have') + ' been sitting for 2+ days. Time to put it away (no chairs!).';
+      banner.classList.add('show');
+    } else {
+      banner.classList.remove('show');
+    }
+  }
+
+  document.getElementById('baskets-grid').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-bundle]');
+    if (!btn) return;
+    const person = btn.dataset.basket;
+    const bundleId = btn.dataset.bundle;
+    state.baskets[person] = state.baskets[person].filter(b => b.id !== bundleId);
+    saveState();
+    render();
+  });
+
+  // ---------- master render ----------
+  function render() {
+    renderLoads();
+    renderBaskets();
+  }
+  render();
+})();
+</script>
+</body>
+</html>
