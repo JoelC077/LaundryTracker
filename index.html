@@ -763,13 +763,22 @@
   let state = loadState();
 
   // ---------- helpers ----------
+  // Format a Date as YYYY-MM-DD using LOCAL components (toISOString returns UTC,
+  // which silently shifts dates by ±1 day in non-UTC timezones).
+  function toLocalISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + dd;
+  }
   function todayISO() {
-    const d = new Date();
-    return d.toISOString().slice(0, 10);
+    return toLocalISO(new Date());
   }
   function formatDate(iso) {
     if (!iso) return '';
-    const d = new Date(iso + 'T00:00:00');
+    // Parse YYYY-MM-DD as local midnight (NOT UTC) by splitting the components.
+    const parts = iso.split('-');
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
   }
   function daysSince(ts) {
@@ -781,7 +790,13 @@
     const diff = day === 0 ? -6 : 1 - day; // back to Monday
     d.setDate(d.getDate() + diff);
     d.setHours(0, 0, 0, 0);
-    return d.toISOString().slice(0, 10);
+    return toLocalISO(d);
+  }
+  function addDaysISO(iso, n) {
+    const parts = iso.split('-');
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    d.setDate(d.getDate() + n);
+    return toLocalISO(d);
   }
   function ensureCurrentWeek() {
     const current = getCurrentWeekStart();
@@ -1044,11 +1059,10 @@
     document.getElementById('chore-goal').value = state.chores.goal;
     document.getElementById('chore-reward').value = state.chores.reward;
 
-    // week label
-    const wsDate = new Date(state.chores.weekStart + 'T00:00:00');
-    const weDate = new Date(wsDate); weDate.setDate(weDate.getDate() + 6);
+    // week label (Mon..Sun, computed in local time so it doesn't drift by timezone)
+    const weekEndISO = addDaysISO(state.chores.weekStart, 6);
     document.getElementById('chore-week').textContent =
-      'Week of ' + formatDate(state.chores.weekStart) + ' – ' + formatDate(weDate.toISOString().slice(0, 10));
+      'Week of ' + formatDate(state.chores.weekStart) + ' – ' + formatDate(weekEndISO);
 
     // leaderboard
     const goal = state.chores.goal;
