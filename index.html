@@ -369,15 +369,196 @@
     .load { grid-template-columns: auto 1fr; }
     .stage-controls { grid-column: 1 / -1; align-items: flex-start; flex-direction: row; justify-content: space-between; }
   }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--shadow);
+    width: fit-content;
+  }
+  nav.tabs button {
+    background: transparent;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--muted);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  nav.tabs button.on {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ---------- Chores ---------- */
+  .chore-week {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .reward-row {
+    display: grid;
+    grid-template-columns: auto 80px 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .reward-row label {
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .leaderboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .kid-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    background: #fcfbf8;
+  }
+  .kid-card.hit {
+    background: #f3f8f4;
+    border-color: var(--accent);
+  }
+  .kid-card .kid-name {
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .kid-card .kid-pts {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 2px 0 8px;
+  }
+  .progress {
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress .bar {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+    border-radius: 999px;
+  }
+  .kid-status {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .kid-status.hit {
+    color: #2f5141;
+    font-weight: 600;
+  }
+
+  .chore-add {
+    display: grid;
+    grid-template-columns: 1fr 80px auto;
+    gap: 8px;
+    align-items: end;
+  }
+  .chore-add label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .chore-row {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: #fcfbf8;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .chore-row.done { background: #f3f8f4; border-color: var(--accent-soft); }
+  .chore-info .chore-name { font-weight: 500; font-size: 14px; }
+  .chore-info .chore-pts { color: var(--muted); font-size: 12px; }
+  .chore-claim {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .chore-claim button[data-claim] {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .chore-claim button[data-claim]:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .chore-claim .claimed {
+    background: var(--accent-soft);
+    color: #2f5141;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .chore-claim button[data-undo] {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+  }
+  .del-chore {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 6px;
+  }
+  .del-chore:hover { color: #b85a47; }
+
+  @media (max-width: 540px) {
+    .leaderboard { grid-template-columns: 1fr; }
+    .reward-row { grid-template-columns: 1fr; }
+    .chore-add { grid-template-columns: 1fr; }
+    .chore-row { grid-template-columns: 1fr auto; }
+    .chore-claim { grid-column: 1 / -1; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="page">
-    <h1>Family Laundry Tracker</h1>
-    <div class="sub">A home for every load — and a basket for every person.</div>
+    <h1>Family Tracker</h1>
+    <div class="sub">Laundry, chores, and a bit less chaos.</div>
   </header>
 
+  <nav class="tabs">
+    <button class="tab on" data-tab="laundry">Laundry</button>
+    <button class="tab" data-tab="chores">Chores</button>
+  </nav>
+
+  <div id="tab-laundry">
   <div id="chair-banner" class="banner"></div>
 
   <!-- Add a load -->
@@ -450,12 +631,75 @@
       <p style="margin-top: 14px;"><strong>Golden rules:</strong> separate by colour, zip up zips, empty pockets, don't overfill the drum (you should be able to fit a hand on top).</p>
     </div>
   </details>
+  </div><!-- /tab-laundry -->
+
+  <div id="tab-chores" hidden>
+    <!-- This week -->
+    <section class="card">
+      <h2>This week</h2>
+      <div class="chore-week" id="chore-week"></div>
+      <div class="reward-row">
+        <label>Goal</label>
+        <input type="number" id="chore-goal" min="1" max="999">
+        <input type="text" id="chore-reward" placeholder="This week's reward (e.g. movie night)">
+      </div>
+      <div class="leaderboard">
+        <div class="kid-card" id="card-eden">
+          <div class="kid-name">Eden</div>
+          <div class="kid-pts" id="pts-eden">0 / 10 pts</div>
+          <div class="progress"><div class="bar" id="bar-eden" style="width:0%"></div></div>
+          <div class="kid-status" id="status-eden">10 pts to go</div>
+        </div>
+        <div class="kid-card" id="card-neriah">
+          <div class="kid-name">Neriah</div>
+          <div class="kid-pts" id="pts-neriah">0 / 10 pts</div>
+          <div class="progress"><div class="bar" id="bar-neriah" style="width:0%"></div></div>
+          <div class="kid-status" id="status-neriah">10 pts to go</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add chore -->
+    <section class="card">
+      <h2>Add a chore</h2>
+      <div class="desc">Anything that needs doing this week. Set how many points it's worth.</div>
+      <div class="chore-add">
+        <div>
+          <label for="chore-name">Chore</label>
+          <input type="text" id="chore-name" placeholder="e.g. Empty the dishwasher">
+        </div>
+        <div>
+          <label for="chore-points">Points</label>
+          <input type="number" id="chore-points" value="1" min="1" max="20">
+        </div>
+        <button class="btn-primary" id="add-chore">Add</button>
+      </div>
+    </section>
+
+    <!-- Chore list -->
+    <section class="card">
+      <h2>Chores</h2>
+      <div class="desc">Tap who did it. Whoever claims it first earns the points. Resets every Monday.</div>
+      <div id="chore-list"></div>
+    </section>
+  </div><!-- /tab-chores -->
 </div>
 
 <script>
 (function () {
   const STORAGE_KEY = 'family-laundry-v1';
   const PEOPLE = ['Joel', 'Neriah', 'Eden', 'Paulette'];
+  const KIDS = ['Eden', 'Neriah'];
+  const DEFAULT_CHORES = [
+    { name: 'Empty the dishwasher', points: 2 },
+    { name: 'Take out the bins', points: 2 },
+    { name: 'Vacuum living room', points: 3 },
+    { name: 'Wipe kitchen counters', points: 1 },
+    { name: 'Tidy your room', points: 1 },
+    { name: 'Set the table', points: 1 },
+    { name: 'Feed pets', points: 1 },
+    { name: 'Make your bed', points: 1 }
+  ];
 
   const TYPE_META = {
     whites:    { label: 'Whites',     color: '#f6f4ee', border: '#dcd6c4' },
@@ -487,13 +731,27 @@
       if (!s.loads) s.loads = [];
       if (!s.baskets) s.baskets = {};
       PEOPLE.forEach(p => { if (!s.baskets[p]) s.baskets[p] = []; });
+      if (!s.chores) s.chores = defaultChores();
+      if (!s.chores.list) s.chores.list = [];
+      if (!s.chores.claims) s.chores.claims = {};
+      if (typeof s.chores.goal !== 'number') s.chores.goal = 10;
+      if (typeof s.chores.reward !== 'string') s.chores.reward = '';
       return s;
     } catch (e) {
       return defaultState();
     }
   }
+  function defaultChores() {
+    return {
+      list: DEFAULT_CHORES.map(c => ({ id: uid(), name: c.name, points: c.points })),
+      weekStart: getCurrentWeekStart(),
+      claims: {},
+      goal: 10,
+      reward: ''
+    };
+  }
   function defaultState() {
-    const s = { loads: [], baskets: {} };
+    const s = { loads: [], baskets: {}, chores: defaultChores() };
     PEOPLE.forEach(p => s.baskets[p] = []);
     return s;
   }
@@ -516,6 +774,36 @@
   }
   function daysSince(ts) {
     return Math.floor((Date.now() - ts) / 86400000);
+  }
+  function getCurrentWeekStart() {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun, 1=Mon..6=Sat
+    const diff = day === 0 ? -6 : 1 - day; // back to Monday
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString().slice(0, 10);
+  }
+  function ensureCurrentWeek() {
+    const current = getCurrentWeekStart();
+    if (state.chores.weekStart !== current) {
+      state.chores.weekStart = current;
+      state.chores.claims = {};
+      saveState();
+    }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function pointsFor(kid) {
+    let total = 0;
+    for (const choreId in state.chores.claims) {
+      const claim = state.chores.claims[choreId];
+      if (claim && claim.person === kid) {
+        const chore = state.chores.list.find(c => c.id === choreId);
+        if (chore) total += chore.points;
+      }
+    }
+    return total;
   }
 
   // ---------- render: add-load form ----------
@@ -684,10 +972,139 @@
     render();
   });
 
+  // ---------- tab switching ----------
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('on', b === btn));
+      document.getElementById('tab-laundry').hidden = (target !== 'laundry');
+      document.getElementById('tab-chores').hidden = (target !== 'chores');
+    });
+  });
+
+  // ---------- chores: form ----------
+  document.getElementById('add-chore').addEventListener('click', () => {
+    const nameEl = document.getElementById('chore-name');
+    const ptsEl = document.getElementById('chore-points');
+    const name = nameEl.value.trim();
+    const points = Math.max(1, parseInt(ptsEl.value, 10) || 1);
+    if (!name) { alert('Give the chore a name.'); return; }
+    state.chores.list.push({ id: uid(), name, points });
+    saveState();
+    nameEl.value = '';
+    ptsEl.value = '1';
+    renderChores();
+  });
+
+  document.getElementById('chore-goal').addEventListener('change', (e) => {
+    const v = Math.max(1, parseInt(e.target.value, 10) || 10);
+    state.chores.goal = v;
+    e.target.value = v;
+    saveState();
+    renderChores();
+  });
+
+  document.getElementById('chore-reward').addEventListener('input', (e) => {
+    state.chores.reward = e.target.value;
+    saveState();
+    renderChores();
+  });
+
+  document.getElementById('chore-list').addEventListener('click', (e) => {
+    const claimBtn = e.target.closest('button[data-claim]');
+    const undoBtn = e.target.closest('button[data-undo]');
+    const delBtn = e.target.closest('button[data-del-chore]');
+    if (claimBtn) {
+      const choreId = claimBtn.dataset.chore;
+      const person = claimBtn.dataset.claim;
+      state.chores.claims[choreId] = { person, at: Date.now() };
+      saveState();
+      renderChores();
+    } else if (undoBtn) {
+      const choreId = undoBtn.dataset.chore;
+      delete state.chores.claims[choreId];
+      saveState();
+      renderChores();
+    } else if (delBtn) {
+      const choreId = delBtn.dataset.chore;
+      if (confirm('Delete this chore for good?')) {
+        state.chores.list = state.chores.list.filter(c => c.id !== choreId);
+        delete state.chores.claims[choreId];
+        saveState();
+        renderChores();
+      }
+    }
+  });
+
+  // ---------- chores: render ----------
+  function renderChores() {
+    ensureCurrentWeek();
+
+    // controls
+    document.getElementById('chore-goal').value = state.chores.goal;
+    document.getElementById('chore-reward').value = state.chores.reward;
+
+    // week label
+    const wsDate = new Date(state.chores.weekStart + 'T00:00:00');
+    const weDate = new Date(wsDate); weDate.setDate(weDate.getDate() + 6);
+    document.getElementById('chore-week').textContent =
+      'Week of ' + formatDate(state.chores.weekStart) + ' – ' + formatDate(weDate.toISOString().slice(0, 10));
+
+    // leaderboard
+    const goal = state.chores.goal;
+    KIDS.forEach(kid => {
+      const key = kid.toLowerCase();
+      const pts = pointsFor(kid);
+      const pct = Math.min(100, Math.round((pts / goal) * 100));
+      document.getElementById('pts-' + key).textContent = pts + ' / ' + goal + ' pts';
+      document.getElementById('bar-' + key).style.width = pct + '%';
+      const status = document.getElementById('status-' + key);
+      const card = document.getElementById('card-' + key);
+      if (pts >= goal) {
+        status.textContent = state.chores.reward
+          ? '🎉 Reward earned: ' + state.chores.reward
+          : '🎉 Goal hit!';
+        status.classList.add('hit');
+        card.classList.add('hit');
+      } else {
+        const togo = goal - pts;
+        status.textContent = togo + ' pt' + (togo === 1 ? '' : 's') + ' to go';
+        status.classList.remove('hit');
+        card.classList.remove('hit');
+      }
+    });
+
+    // chore list
+    const listEl = document.getElementById('chore-list');
+    listEl.innerHTML = '';
+    if (state.chores.list.length === 0) {
+      listEl.innerHTML = '<div class="empty-loads">No chores yet. Add one above.</div>';
+      return;
+    }
+    state.chores.list.forEach(chore => {
+      const claim = state.chores.claims[chore.id];
+      const row = document.createElement('div');
+      row.className = 'chore-row' + (claim ? ' done' : '');
+      const claimMarkup = claim
+        ? '<span class="claimed">' + escapeHtml(claim.person) + ' ✓</span>' +
+          '<button data-undo="1" data-chore="' + chore.id + '" title="Undo">↺</button>'
+        : KIDS.map(k => '<button data-claim="' + k + '" data-chore="' + chore.id + '">' + k + '</button>').join('');
+      row.innerHTML =
+        '<div class="chore-info">' +
+          '<div class="chore-name">' + escapeHtml(chore.name) + '</div>' +
+          '<div class="chore-pts">' + chore.points + ' pt' + (chore.points === 1 ? '' : 's') + '</div>' +
+        '</div>' +
+        '<div class="chore-claim">' + claimMarkup + '</div>' +
+        '<button class="del-chore" data-del-chore="1" data-chore="' + chore.id + '" title="Remove">✕</button>';
+      listEl.appendChild(row);
+    });
+  }
+
   // ---------- master render ----------
   function render() {
     renderLoads();
     renderBaskets();
+    renderChores();
   }
   render();
 })();
